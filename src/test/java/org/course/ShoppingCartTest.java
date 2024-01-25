@@ -9,9 +9,9 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ShoppingCartTest {
-    private final String CUSTOMER_ID = "AAA11111AA-A";
-    private final String ITEM_NAME = "ITEM NAME";
-    private final String INVALID_ITEM_NAME = "ITEM_NAME%%%%";
+    private final CustomerId CUSTOMER_ID = new CustomerId("AAA11111AA-A");
+    private final Item item1 = new Item("Milk", "2.99");
+    private final Item item2 = new Item("COla", "1.99");
     private ShoppingCart mockShoppingCart;
 
 
@@ -25,98 +25,84 @@ class ShoppingCartTest {
         ShoppingCart shoppingCart = new ShoppingCart(CUSTOMER_ID);
         assertEquals(CUSTOMER_ID, shoppingCart.getCustomerId());
         assertTrue(shoppingCart.getItems().isEmpty());
-        assertFalse(shoppingCart.getId().toString().isEmpty());
+        assertNotNull(shoppingCart.getId());
     }
 
     @Test
-    void createShoppingCart_thenThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> new ShoppingCart("INVALID_CUSTOMER_ID"));
+    void createShoppingCart_thenFailure() {
+        assertThrows(IllegalArgumentException.class, () -> new ShoppingCart(null));
     }
 
     @Test
     void addItem_thenSuccess() {
-        mockShoppingCart.addItem(ITEM_NAME, 5);
-        assertEquals(5, mockShoppingCart.getItems().get(ITEM_NAME));
-    }
-
-    @Test
-    void addItem_invalidItemName_thenThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.addItem(INVALID_ITEM_NAME, 5));
+        mockShoppingCart.addItem(item1, 5);
+        assertEquals(5, mockShoppingCart.getItems().get(item1));
     }
 
     @Test
     void addItem_invalidItemQuantity_thenThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.addItem(ITEM_NAME, -1));
-        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.addItem(ITEM_NAME, 0));
-        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.addItem(ITEM_NAME, 99999999));
+        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.addItem(item1, -1));
+        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.addItem(item1, 0));
+        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.addItem(item1, 99999999));
     }
 
     @Test
     void updateItem_thenSuccess() {
-        mockShoppingCart.addItem(ITEM_NAME, 5);
-        mockShoppingCart.updateItem(ITEM_NAME, 10);
-        assertEquals(10, mockShoppingCart.getItems().get(ITEM_NAME));
+        mockShoppingCart.addItem(item1, 5);
+        mockShoppingCart.updateItem(item1, 10);
+        assertEquals(10, mockShoppingCart.getItems().get(item1));
     }
 
     @Test
     void updateItem_notFound_thenThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.updateItem(ITEM_NAME, 10));
-    }
-
-    @Test
-    void updateItem_invalidItemName_thenThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.updateItem(INVALID_ITEM_NAME, 10));
+        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.updateItem(item1, 10));
     }
 
     @Test
     void updateItem_invalidItemQuantity_thenThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.updateItem(ITEM_NAME, 0));
+        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.updateItem(item1, 0));
     }
 
     @Test
     void removeItem_thenSuccess() {
-        mockShoppingCart.addItem(ITEM_NAME, 5);
-        mockShoppingCart.removeItem(ITEM_NAME);
-        assertFalse(mockShoppingCart.getItems().containsKey(ITEM_NAME));
+        mockShoppingCart.addItem(item1, 5);
+        mockShoppingCart.removeItem(item1);
+        assertFalse(mockShoppingCart.getItems().containsKey(item1));
     }
 
     @Test
     void removeItem_notFound_thenThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.removeItem(ITEM_NAME));
+        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.removeItem(item1));
     }
-
-    @Test
-    void removeItem_invalidItemName_thenThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> mockShoppingCart.removeItem(INVALID_ITEM_NAME));
-    }
-
     @Test
     void getItems_thenSuccess() {
-        mockShoppingCart.addItem(ITEM_NAME, 5);
+        mockShoppingCart.addItem(item1, 5);
         assertEquals(1, mockShoppingCart.getItems().size());
-        assertTrue(mockShoppingCart.getItems().containsKey(ITEM_NAME));
-        assertEquals(5, (int) mockShoppingCart.getItems().get(ITEM_NAME));
+        assertTrue(mockShoppingCart.getItems().containsKey(item1));
+        assertEquals(5, (int) mockShoppingCart.getItems().get(item1));
     }
 
     @Test
     void getItems_isImmutable() {
-        Map<String, Integer> items = mockShoppingCart.getItems();
-        assertThrows(UnsupportedOperationException.class, () -> items.put(ITEM_NAME, 1));
+        Map<Item, Integer> items = mockShoppingCart.getItems();
+        assertThrows(UnsupportedOperationException.class, () -> items.put(item1, 1));
     }
 
     @Test
     void getTotalCost_thenSuccess() {
-        mockShoppingCart.addItem(ITEM_NAME, 5);
-        assertEquals(0.0, mockShoppingCart.getTotalCost());
+        mockShoppingCart.addItem(item1, 5);
+        mockShoppingCart.addItem(item2, 5);
+        assertEquals(24.9, mockShoppingCart.getTotalCost());
     }
 
     @Test
     void testThreadSafety() {
         IntStream.range(0, 100).parallel().forEach(i -> {
-            mockShoppingCart.addItem("Item" + i, 1);
-            mockShoppingCart.updateItem("Item" + i, 2);
-            mockShoppingCart.removeItem("Item" + i);
+            Item item = i/2 ==0 ? item1 : item2;
+            mockShoppingCart.addItem(item);
         });
+        mockShoppingCart.removeItem(item1);
+        mockShoppingCart.removeItem(item2);
         assertTrue(mockShoppingCart.getItems().isEmpty(), "Cart should be empty after adding and removing items.");
     }
 }

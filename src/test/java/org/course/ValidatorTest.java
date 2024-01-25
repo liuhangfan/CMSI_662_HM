@@ -40,4 +40,17 @@ class ValidatorTest {
         assertThrows(IllegalArgumentException.class, () -> Validator.validateItemQuantity(0));
         assertThrows(IllegalArgumentException.class, () -> Validator.validateItemQuantity(1001));
     }
+
+    @Test
+    void validateInvalidItemPrice(){
+        assertThrows(IllegalArgumentException.class, () -> Validator.validateItemPrice("-1"));
+        assertThrows(IllegalArgumentException.class, () -> Validator.validateItemPrice("0"));
+        assertThrows(IllegalArgumentException.class, () -> Validator.validateItemPrice("99999999999"));
+        assertThrows(IllegalArgumentException.class, () -> Validator.validateItemPrice("abc"));
+    }
+
+    @Test
+    void validateValidItemPrice() {
+        assertDoesNotThrow(() -> Validator.validateItemPrice("12.33"));
+    }
 }

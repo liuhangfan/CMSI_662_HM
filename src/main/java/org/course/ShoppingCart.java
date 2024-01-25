@@ -10,17 +10,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ShoppingCart {
     private final UUID id;
-    private final String customerId;
-    private final Map<String, Integer> items;
+    private final CustomerId customerId;
+    private final Map<Item, Integer> items;
 
     /**
      * Create a ShoppingCart instance for a given customer.
-     *
-     * @param customerId The unique identifier of the customer.
      * @throws IllegalArgumentException If the customerId is invalid.
      */
-    public ShoppingCart(String customerId) {
-        Validator.validateCustomerId(customerId);
+    public ShoppingCart(CustomerId customerId) {
+        if(customerId == null) throw new IllegalArgumentException("customerId must be not null");
         this.id = UUID.randomUUID();
         this.customerId = customerId;
         this.items = new ConcurrentHashMap<>(); // ensure operation of items is thread-safe
@@ -30,7 +28,7 @@ public class ShoppingCart {
         return id;
     }
 
-    public String getCustomerId() {
+    public CustomerId getCustomerId() {
         return customerId;
     }
 
@@ -39,33 +37,35 @@ public class ShoppingCart {
      *
      * @return A map of item names to their quantities.
      */
-    public Map<String, Integer> getItems() {
+    public Map<Item, Integer> getItems() {
         return Collections.unmodifiableMap(items);
     }
 
     /**
      * Adds or increments the quantity of an item in the cart.
      *
-     * @param item     The name of the item to add.
+     * @param item     The item to add.
      * @param quantity The quantity to add.
      * @throws IllegalArgumentException If the item name or quantity is invalid.
      */
-    public void addItem(String item, int quantity) {
-        Validator.validateItemName(item);
+    public void addItem(Item item, int quantity) {
         int total = items.getOrDefault(item, 0) + quantity;
         Validator.validateItemQuantity(total);
         items.put(item, total);
     }
 
+    public void addItem(Item item) {
+        addItem(item, 1);
+    }
+
     /**
      * Updates the quantity of an existing item in the cart.
      *
-     * @param item     The name of the item to update.
+     * @param item     The item to update.
      * @param quantity The new quantity of the item.
      * @throws IllegalArgumentException If the item is not in the cart or if the quantity is invalid.
      */
-    public void updateItem(String item, int quantity) {
-        Validator.validateItemName(item);
+    public void updateItem(Item item, int quantity) {
         Validator.validateItemQuantity(quantity);
         if (!items.containsKey(item)) {
             throw new IllegalArgumentException("Item was not found in the cart");
@@ -76,11 +76,10 @@ public class ShoppingCart {
     /**
      * Removes an item from the cart.
      *
-     * @param item The name of the item to remove.
+     * @param item The item to remove.
      * @throws IllegalArgumentException If the item is not in the cart.
      */
-    public void removeItem(String item) {
-        Validator.validateItemName(item);
+    public void removeItem(Item item) {
         if (!items.containsKey(item)) {
             throw new IllegalArgumentException("Item was not found in the cart");
         }
@@ -93,15 +92,8 @@ public class ShoppingCart {
      * @return The total cost.
      */
     public double getTotalCost() {
-        double totalCost = 0.0;
-        for (Map.Entry<String, Integer> e : items.entrySet()) {
-            totalCost += getItemCost(e.getKey()) * e.getValue();
-        }
-        return totalCost;
-    }
-
-    private double getItemCost(String item) {
-        // TODO need logic to get item cost from a pricing service
-        return 0; // example
+        return items.entrySet().stream()
+                .mapToDouble(entry -> entry.getKey().getPrice().doubleValue() * entry.getValue())
+                .sum();
     }
 }
