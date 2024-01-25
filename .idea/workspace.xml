@@ -5,16 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8da80025-527b-4bea-8b47-1c846bd5183d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/course/CustomerId.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/course/Item.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/course/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/course/CustomerIdTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/course/ItemTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/course/ShoppingCart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/course/ShoppingCart.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/course/Validator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/course/Validator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/course/ShoppingCartTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/course/ShoppingCartTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/course/ValidatorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/course/ValidatorTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +23,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -160,7 +155,8 @@
       <option name="presentableId" value="Default" />
       <updated>1705811906847</updated>
       <workItem from="1705811907935" duration="10529000" />
-      <workItem from="1706155871439" duration="5580000" />
+      <workItem from="1706155871439" duration="5964000" />
+      <workItem from="1706162017534" duration="313000" />
     </task>
     <servers />
   </component>
